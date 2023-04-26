@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  nginx-fe:
+    image: nginx:latest
+    restart: always
+    volumes:
+      - "$PWD/fe_test/index.html:/usr/share/nginx/html/index.html"
+    ports:
+      - "80:80"
+

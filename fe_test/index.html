@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Event Form</title>
+</head>
+<body>
+  <h1>スポーツイベントフォーム</h1>
+  <form id="event-form">
+    <label for="title">タイトル:</label>
+    <input type="text" id="title" name="title" required><br>
+
+    <label for="comment">コメント:</label>
+    <input type="text" id="comment" name="comment" required><br>
+
+    <label for="timeFrom">開始時刻:</label>
+    <input type="datetime-local" id="timeFrom" name="timeFrom" required><br>
+
+    <label for="timeTo">終了時刻:</label>
+    <input type="datetime-local" id="timeTo" name="timeTo" required><br>
+
+    <button type="submit">送信</button>
+  </form>
+
+  <script>
+    function formatDate(isoDateString) {
+            const datePart = isoDateString.slice(0, 10);
+            const timePart = isoDateString.slice(11, 19);
+            return `${datePart} ${timePart}`;
+    }
+
+    document.getElementById("event-form").addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const title = document.getElementById("title").value;
+      const comment = document.getElementById("comment").value;
+      const timeFrom = document.getElementById("timeFrom").value;
+      const timeTo = document.getElementById("timeTo").value;
+
+      const data = {
+        title,
+        comment,
+        timeFrom: formatDate(timeFrom),
+        timeTo: formatDate(timeTo),
+        ownerId: "xxxxx_owner_xxxx_id",
+        eventType: 1,
+        sportEventIdList: [1, 2]
+      };
+
+      console.log(JSON.stringify(data));
+
+      const url = "https://localhost/sportsevent/v1/api/event";
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          const jsonResponse = await response.json();
+          console.log(jsonResponse);
+        } else {
+          throw new Error(`HTTP error: ${response.status}`);
+        }
+      } catch (error) {
+        console.error(`Error in postEvent: ${error}`);
+      }
+    });
+  </script>
+</body>
+</html>
+
